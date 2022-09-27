@@ -2,13 +2,10 @@ import { render } from "@testing-library/react";
 import React from "react";
 import {useState} from 'react'
 import Hydraholder from './Hydraholder'
-// osc (frequency, sync, offset)
-// noise(scale, offset)
-// shape(sides, radius, smoothing
-// solid(r, g, b, a )
-// voronoi( scale, speed, blending
-// gradient(speed )
-// Outputs
+import Testvideo from './Testvideo'
+
+
+// :q to get out of git lol
 
 navigator.requestMIDIAccess()
     .then(onMIDISuccess, onMIDIFailure);
@@ -46,9 +43,7 @@ function App() {
 
     return(
         <div id='vidya'>
-             <Hydraholder />
-
-            
+             <Hydraholder />           
         </div>
     )
 }

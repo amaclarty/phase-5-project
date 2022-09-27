@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from 'react'
+import {useRef} from 'react'
 
 // osc (frequency, sync, offset)
 // noise(scale, offset)
@@ -14,7 +15,7 @@ const Hydra = require('hydra-synth')
 const h = new Hydra({ makeGlobal: true, detectAudio: false }).synth
 
 function Hydraholder()  { 
-
+    const angles =useRef(4)
 
     const osc1 = h.osc(10, 0.01, 1.4)
     .rotate(0, 0.1)
@@ -41,21 +42,29 @@ function Hydraholder()  {
         .diff(h.shape(640.2, .5))
         .diff(h.gradient())
         .modulate(osc2)
-    
-    // const osc4 = osc1.mult(h.noise())
+
+    const [rotate1, setRotate1] =useState(0.00)
+
+    const osc4 =h.shape(5)
+        .rotate(rotate1)
         
 
     const [preset, setPreset] =useState(osc1)
-
+   
+   
     return(
-        <div>
-            {preset.out()}
-            <div>
+        <div id='video-holder'>
+            {preset.rotate(rotate1)
+            .out()}
+            <button onClick={() => setRotate1(rotate1 + 0.05)}>Rotate</button>
+            <div id='buttons'>
             <button onClick={() => {setPreset(osc1)}}>Osc 1</button>
             <button onClick={() => {setPreset(osc2)}}>Osc2</button>
             <button onClick={() => {setPreset(osc3)}}>Osc3</button>
-            {/* <button onClick={() => {setPreset(osc4)}}>Osc4</button> */}
+            <button onClick={() => {setPreset(osc4)}}>Osc4</button>
+        
             </div>
+       
         </div>
     )
 }
