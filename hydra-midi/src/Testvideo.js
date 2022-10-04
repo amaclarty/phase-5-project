@@ -1,46 +1,61 @@
-// import { render } from "@testing-library/react";
-// import React, { useEffect } from "react";
-// import { useState } from 'react'
-// import {useRef} from 'react'
+import { render } from "@testing-library/react";
+import React from "react";
+import {useState} from 'react'
 
-// const Hydra = require('hydra-synth')  
-// const h = new Hydra({ makeGlobal: true, numOutputs: 4, detectAudio: false }).synth
 
-// function Testvideo() {
-//     const lfo = h.noise(4, 1.5, 10)
-//     const osc1 = h.noise(10, 0.01, 9.4)
-//     .modulate(lfo)
-//     .mult(h.osc((10, 0.1)).modulate(h.osc(20).rotate(0, -0.01), 0.1))
-//     .color(2.83, 0.91, 0.39)
-//     .scrollX(0.5, -0.1)
-//     .rotate(0.1, 0.1)
-//     .kaleid(4)
-//     .posterize()
-//     let osc2 = h.osc(80, 0).hue(1).colorama(2).contrast(2).kaleid(1).repeat(1).kaleid(200)
-//     .out(h.o1)
 
-//     let osc3 = h.osc().modulate((h.o1)).diff((h.o1)).mult(h.shape(3, 5).repeat(2).rotate(-1,.2).kaleid(6)).colorama().diff(h.o1)
 
-//     let osc4 = h.osc().color( ()=>cc[16], ()=>cc[17], ()=>cc[18] ).out())
 
-//     const mod2 = () => {
-//         osc3 = osc3.modulate(h.noise()).scrollX(0.5, 0.05).kaleid(10).rotate(.5, .4)
-//     }
 
-//     mod2()
-   
+function Testvideo() {
+  
+    const Hydra = require('hydra-synth')  
+    const h = new Hydra({ makeGlobal: true, numOutputs: 4, detectAudio: false }).synth
+    // :q to get out of git lol
+    
+    
+    navigator.requestMIDIAccess()
+        .then(onMIDISuccess, onMIDIFailure);
+    
+        let getMIDIMessage = function(midiMessage) {
+            var arr = midiMessage.data    
+            var index = arr[1]
+            
+            var val = (arr[2]+1)/128.0 
+            cc[index]=val
+        }
+    
+    function onMIDISuccess(midiAccess) {
+        console.log(midiAccess);
+        var inputs = midiAccess.inputs;
+        var outputs = midiAccess.outputs;
+        for (var input of midiAccess.inputs.values()){
+            input.onmidimessage = getMIDIMessage;
+        }
+        
+    }
+    
+    function onMIDIFailure() {
+        console.log('Could not access your MIDI devices.');
+    }
+    
+    var cc=Array(128).fill(0.5)
+    
+    
+    
+    
+    h.shape(3, ()=>cc[0], 0.1, (()=>cc[2] / 2)).color((()=>cc[21]), (()=>cc[22]), (()=>cc[23])).diff(h.src(h.o1).rotate(()=>cc[16])).scale(0.9).hue(0.03).contrast(()=>cc[1] * 2).out(h.o1)
+    h.src(h.o1).rotate(0.5, 1).colorama(0.5).add(h.src(h.o0).saturate(1)).rotate(()=>cc[17] * 3).contrast(()=>cc[7] * 4).modulate(h.src(h.o1)).luma().invert().scale(()=>cc[6] * 2).out(h.o0)
     
 
-//     return(
-//         <div>          
-//         {/* <input type='range' min='-0.5' max='0.5' step='0.01' id='slideryo' onInput={() => setFreq(document.getElementById('slideryo').value)}></input>  */}
-//         {/* <input type='range' min='-10' max='10' step='1' id='slider2yo'onInput={() => setFreq2(document.getElementById('slider2yo').value)} ></input> 
-//         {osc2.out()}   */}
-//         {osc4.out()}
+ 
 
-//         {/* onInput={() => setFreq2(document.getElementById('slider2yo').value)}></input>  */}
-//         </div>
-//     )
-// }
+    return(
+        <div id='vidya'>
+            
+             {/* <Testvideo /> */}
+        </div>
+    )
+}
 
-// export default Testvideo
+export default Testvideo
